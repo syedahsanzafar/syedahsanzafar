@@ -1,0 +1,5 @@
+{
+  "name": "Wholesale POS System",
+  "description": "A comprehensive Point of Sale (POS) system for wholesale businesses. It tracks credit sales for pre-defined customers and items, manages customer-specific discounts, and generates detailed reports for sales, profit, items, and stock.",
+  "requestFramePermissions": []
+}

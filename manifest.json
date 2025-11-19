@@ -1,0 +1,16 @@
+{
+  "short_name": "Wholesale POS",
+  "name": "Wholesale POS System",
+  "description": "A comprehensive Point of Sale (POS) system for wholesale businesses.",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4f46e5",
+  "background_color": "#111827"
+}
