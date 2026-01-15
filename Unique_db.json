@@ -9,7 +9,7 @@
       "used": 0
     },
     {
-      "id": "2",
+      "id": "ENT-002",
       "name": "Zaki",
       "dept": "ENT",
       "phone": "098-765-4321",
@@ -35,11 +35,11 @@
   ],
   "attendance": {
     "2026-01-14": {
-      "2": {
-        "status": "HalfDay"
-      },
       "3": {
         "status": "Short"
+      },
+      "ENT-002": {
+        "status": "HalfDay"
       }
     },
     "2026-01-15": {
