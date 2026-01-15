@@ -33,6 +33,14 @@
       "3": {
         "status": "Short"
       }
+    },
+    "2026-01-15": {
+      "1": {
+        "status": "HalfDay"
+      },
+      "2": {
+        "status": "Short"
+      }
     }
   },
   "departments": [
