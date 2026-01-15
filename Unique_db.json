@@ -17,7 +17,7 @@
       "used": 0.5
     },
     {
-      "id": "3",
+      "id": "SR-001",
       "name": "Abdullah",
       "dept": "Surgical",
       "phone": "555-0199",
@@ -35,21 +35,21 @@
   ],
   "attendance": {
     "2026-01-14": {
-      "3": {
-        "status": "Short"
-      },
       "ENT-002": {
         "status": "HalfDay"
+      },
+      "SR-001": {
+        "status": "Short"
       }
     },
     "2026-01-15": {
-      "3": {
-        "status": "Present"
-      },
       "1768462398264": {
         "status": "Emergency"
       },
       "IT-001": {
+        "status": "Present"
+      },
+      "SR-001": {
         "status": "Present"
       }
     }
