@@ -23,6 +23,14 @@
       "phone": "555-0199",
       "quota": 20,
       "used": 0.25
+    },
+    {
+      "id": "1768462398264",
+      "name": "shazee kazmi",
+      "dept": "OPD",
+      "phone": "03435299116",
+      "quota": 24,
+      "used": 0
     }
   ],
   "attendance": {
