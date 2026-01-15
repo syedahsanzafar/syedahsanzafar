@@ -30,7 +30,7 @@
       "dept": "OPD",
       "phone": "03435299116",
       "quota": 24,
-      "used": 0
+      "used": 1
     }
   ],
   "attendance": {
@@ -63,6 +63,7 @@
     "Peads",
     "Dermatology",
     "Cardiology",
-    "Maternity"
+    "Maternity",
+    "IT"
   ]
 }
