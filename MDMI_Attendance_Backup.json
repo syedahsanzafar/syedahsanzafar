@@ -1,1 +1,60 @@
-{"employees":[{"id":"1","name":"Ahsan Zafar","dept":"IT","phone":"123-456-7890","quota":30,"used":0},{"id":"2","name":"Zaki","dept":"HR","phone":"098-765-4321","quota":25,"used":0.5},{"id":"3","name":"Abdullah","dept":"Finance","phone":"555-0199","quota":20,"used":0.25}],"attendance":{"2026-01-14":{"2":{"status":"HalfDay"},"3":{"status":"Short"}}}}
+{
+  "employees": [
+    {
+      "id": "1",
+      "name": "Ahsan Zafar",
+      "dept": "IT",
+      "phone": "123-456-7890",
+      "quota": 30,
+      "used": 0
+    },
+    {
+      "id": "2",
+      "name": "Zaki",
+      "dept": "HR",
+      "phone": "098-765-4321",
+      "quota": 25,
+      "used": 0.5
+    },
+    {
+      "id": "3",
+      "name": "Abdullah",
+      "dept": "Finance",
+      "phone": "555-0199",
+      "quota": 20,
+      "used": 0.25
+    }
+  ],
+  "attendance": {
+    "2026-01-14": {
+      "2": {
+        "status": "HalfDay"
+      },
+      "3": {
+        "status": "Short"
+      }
+    }
+  },
+  "departments": [
+    "OPD",
+    "Medical",
+    "Surgical",
+    "Radiology",
+    "ENT",
+    "Peads",
+    "Dermatology",
+    "Cardiology",
+    "Maternity",
+    "IT"
+  ],
+  "leaveApplications": [
+    {
+      "empId": "IT-001",
+      "startDate": "2026-01-15",
+      "endDate": "2026-01-17",
+      "type": "Emergency",
+      "notes": "Testing",
+      "image": "data:image/jpeg;base64,/9j/4"
+    }
+  ]
+}
