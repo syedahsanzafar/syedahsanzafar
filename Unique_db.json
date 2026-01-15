@@ -1,7 +1,7 @@
 {
   "employees": [
     {
-      "id": "1",
+      "id": "IT-001",
       "name": "Ahsan Zafar",
       "dept": "IT",
       "phone": "123-456-7890",
@@ -43,14 +43,14 @@
       }
     },
     "2026-01-15": {
-      "1": {
-        "status": "Present"
-      },
       "3": {
         "status": "Present"
       },
       "1768462398264": {
         "status": "Emergency"
+      },
+      "IT-001": {
+        "status": "Present"
       }
     }
   },
