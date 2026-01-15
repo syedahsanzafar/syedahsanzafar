@@ -25,7 +25,7 @@
       "used": 0.25
     },
     {
-      "id": "1768462398264",
+      "id": "OPD-005",
       "name": "shazee kazmi",
       "dept": "OPD",
       "phone": "03435299116",
@@ -43,14 +43,14 @@
       }
     },
     "2026-01-15": {
-      "1768462398264": {
-        "status": "Emergency"
-      },
       "IT-001": {
         "status": "Present"
       },
       "SR-001": {
         "status": "Present"
+      },
+      "OPD-005": {
+        "status": "Emergency"
       }
     }
   },
