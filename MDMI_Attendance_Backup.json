@@ -35,6 +35,9 @@
       }
     },
     "2026-01-15": {
+      "1": {
+        "status": "Present"
+      },
       "2": {
         "status": "Emergency"
       },
