@@ -788,7 +788,8 @@
       ],
       "billTotal": 12337.5,
       "prevBal": 0,
-      "finalPayable": 12337.5
+      "finalPayable": 12337.5,
+      "notes": "Murad ka bhai via Ashraf sb"
     },
     {
       "inv": 1007,
@@ -1055,7 +1056,7 @@
   "logs": [],
   "invoiceCounter": 1003,
   "purchases": [],
-  "lastModified": 1768560170055,
+  "lastModified": 1768560198316,
   "royaltyPayments": [],
   "labours": [
     {
