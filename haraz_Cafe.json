@@ -16,7 +16,7 @@
       "id": 2,
       "name": "Espresso Beans",
       "category": "Coffee Beans",
-      "stock": 12,
+      "stock": 5,
       "unit": "kg",
       "min": 8,
       "supplier": "Global Roasters",
