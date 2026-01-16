@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haraz Coffee House - Smart Inventory System</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Excel Export -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary: #5c4033;
+            /* Coffee Dark */
+            --secondary: #d4af37;
+            /* Gold */
+            --accent: #a67c52;
+            /* Coffee Light */
+            --bg-dark: #121212;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f5f5f5;
+            --text-dim: #b3b3b3;
+            --danger: #ff4d4d;
+            --success: #00e676;
+            --warning: #ffab00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 50%, #1a1512 0%, #0c0c0c 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            /* Support for iOS Safe Areas (Notch) */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .font-heading {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            height: 100vh;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            padding: calc(2rem + env(safe-area-inset-top)) 1rem 2rem 1rem;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 3rem;
+            padding-left: 0.5rem;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            background: var(--secondary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--secondary);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-dim);
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: var(--glass-bg);
+            color: var(--text-main);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            box-shadow: 0 4px 15px rgba(92, 64, 51, 0.3);
+        }
+
+        .nav-item i {
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--glass-bg);
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-info span {
+            display: block;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-info h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        /* Inventory View */
+        .inventory-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            width: 100%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 12px 16px 12px 48px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            box-shadow: 0 4px 15px rgba(92, 64, 51, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            background: var(--glass-bg);
+        }
+
+        /* Table */
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 1.5rem;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--text-dim);
+            font-weight: 500;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid var(--glass-border);
+            vertical-align: middle;
+        }
+
+        .item-row:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-danger {
+            background: rgba(255, 77, 77, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(255, 77, 77, 0.2);
+        }
+
+        .badge-success {
+            background: rgba(0, 230, 118, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(0, 230, 118, 0.2);
+        }
+
+        .badge-warning {
+            background: rgba(255, 171, 0, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(255, 171, 0, 0.2);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--glass-border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--secondary);
+            transition: width 0.5s ease;
+        }
+
+        /* Counter UI */
+        .counter {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .counter-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .counter-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal {
+            background: #1a1a1a;
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 12px;
+            border-radius: 10px;
+            color: white;
+            outline: none;
+        }
+
+        /* Stock Take View */
+        .stock-take-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stock-item-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .stock-item-card h3 {
+            font-size: 1.1rem;
+        }
+
+        .daily-input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            font-size: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+            color: var(--secondary);
+            outline: none;
+        }
+
+        /* Charts Section */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animated {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        /* Hide sections */
+        .section {
+            display: none;
+            opacity: 0;
+        }
+
+        .section.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Notification */
+        #notification-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 2000;
+            border: 1px solid var(--secondary);
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+                padding-bottom: 80px;
+                /* Space for bottom nav */
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .user-profile {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-info h2 {
+                font-size: 1.25rem;
+            }
+
+            .inventory-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            /* Bottom Navigation for Mobile */
+            .mobile-nav {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: rgba(18, 18, 18, 0.95);
+                backdrop-filter: blur(10px);
+                border-top: 1px solid var(--glass-border);
+                justify-content: space-around;
+                padding: 10px 0 calc(10px + env(safe-area-inset-bottom)) 0;
+                z-index: 1000;
+            }
+
+            .mobile-nav-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+                color: var(--text-dim);
+                font-size: 0.7rem;
+                cursor: pointer;
+            }
+
+            .mobile-nav-item.active {
+                color: var(--secondary);
+            }
+
+            .mobile-nav-item i {
+                width: 20px;
+                height: 20px;
+            }
+
+            /* Table responsiveness */
+            .card {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 600px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-nav {
+                display: none;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="brand">
+            <div class="brand-logo">
+                <i data-lucide="coffee"></i>
+            </div>
+            <span class="brand-name">HARAZ COFFEE</span>
+        </div>
+        <ul class="nav-links">
+            <li class="nav-item active" onclick="showSection('dashboard', this)">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+            </li>
+            <li class="nav-item" onclick="showSection('inventory', this)">
+                <i data-lucide="package"></i>
+                <span>Inventory</span>
+            </li>
+            <li class="nav-item" onclick="showSection('stocktake', this)">
+                <i data-lucide="clipboard-check"></i>
+                <span>Stock Audit</span>
+            </li>
+            <li class="nav-item" onclick="showSection('procurement', this)">
+                <i data-lucide="shopping-cart"></i>
+                <span>Procurement</span>
+            </li>
+            <li class="nav-item" onclick="showSection('analytics', this)">
+                <i data-lucide="bar-chart-3"></i>
+                <span>Trends</span>
+            </li>
+            <li class="nav-item" onclick="showSection('settings', this)">
+                <i data-lucide="settings"></i>
+                <span>Settings</span>
+            </li>
+        </ul>
+
+        <div style="margin-top: auto; padding: 1rem;">
+            <div
+                style="background: var(--glass-bg); padding: 15px; border-radius: 15px; border: 1px solid var(--glass-border);">
+                <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 5px;">MONTHLY BUDGET</p>
+                <div class="progress-bar">
+                    <div id="budget-progress" class="progress-fill" style="width: 0%;"></div>
+                </div>
+                <p style="font-size: 0.8rem; font-weight: 600;" id="budget-text">$ 0 / 0</p>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Bottom Nav -->
+    <div class="mobile-nav">
+        <div class="mobile-nav-item active" onclick="showSection('dashboard', this)">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Home</span>
+        </div>
+        <div class="mobile-nav-item" onclick="showSection('inventory', this)">
+            <i data-lucide="package"></i>
+            <span>Stock</span>
+        </div>
+        <div class="mobile-nav-item" onclick="showSection('stocktake', this)">
+            <i data-lucide="clipboard-check"></i>
+            <span>Audit</span>
+        </div>
+        <div class="mobile-nav-item" onclick="showSection('procurement', this)">
+            <i data-lucide="shopping-cart"></i>
+            <span>Buy</span>
+        </div>
+        <div class="mobile-nav-item" onclick="showSection('settings', this)">
+            <i data-lucide="settings"></i>
+            <span>Settings</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header>
+            <div class="page-title">
+                <h1 id="view-title">Dashboard</h1>
+                <p id="view-subtitle">Welcome back, Haraz Manager</p>
+            </div>
+            <div class="user-profile">
+                <div id="alert-trigger" style="position: relative; cursor: pointer;"
+                    onclick="handleNotificationClick()">
+                    <i data-lucide="bell" style="width: 20px;"></i>
+                    <span id="notification-dot"
+                        style="position: absolute; top: -5px; right: -5px; background: var(--danger); width: 8px; height: 8px; border-radius: 50%; display: none;"></span>
+                </div>
+                <div
+                    style="width: 32px; height: 32px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                    H</div>
+                <span>Haraz Admin</span>
+            </div>
+        </header>
+
+        <!-- DASHBOARD SECTION -->
+        <div id="dashboard" class="section active animated">
+            <div class="stats-grid">
+                <div class="stat-card" style="cursor: pointer;" onclick="navigateToSection('inventory')">
+                    <div class="stat-icon" style="background: rgba(0, 230, 118, 0.1); color: var(--success);">
+                        <i data-lucide="package"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span>Total Items</span>
+                        <h2 id="stat-total-items">0</h2>
+                    </div>
+                </div>
+                <div class="stat-card" style="cursor: pointer;" onclick="navigateToSection('procurement')">
+                    <div class="stat-icon" style="background: rgba(255, 77, 77, 0.1); color: var(--danger);">
+                        <i data-lucide="alert-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span>Low Stock</span>
+                        <h2 id="stat-low-stock">0</h2>
+                    </div>
+                </div>
+                <div class="stat-card" style="cursor: pointer;" onclick="navigateToSection('analytics')">
+                    <div class="stat-icon" style="background: rgba(212, 175, 55, 0.1); color: var(--secondary);">
+                        <i data-lucide="trending-up"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span>Monthly Spend</span>
+                        <h2 id="stat-month-spend">$ 0</h2>
+                    </div>
+                </div>
+                <div class="stat-card" style="cursor: pointer;" onclick="navigateToSection('procurement')">
+                    <div class="stat-icon" style="background: rgba(166, 124, 82, 0.1); color: var(--accent);">
+                        <i data-lucide="clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span>Pending Orders</span>
+                        <h2 id="stat-pending-orders">0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="charts-container">
+                <div class="card">
+                    <h3 style="margin-bottom: 1.5rem;">Inventory Usage Trend</h3>
+                    <canvas id="usageChart" height="200"></canvas>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 1rem;">Stock Alerts</h3>
+                    <div id="dashboard-alerts" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <!-- Alerts will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INVENTORY SECTION -->
+        <div id="inventory" class="section animated">
+            <div class="inventory-controls">
+                <div class="search-box">
+                    <i data-lucide="search"></i>
+                    <input type="text" placeholder="Search items..." onkeyup="filterInventory(this.value)">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-outline" onclick="exportToExcel()">
+                        <i data-lucide="file-spreadsheet"></i> Export to Excel
+                    </button>
+                    <button class="btn btn-primary" onclick="openModal('addItemModal')">
+                        <i data-lucide="plus"></i> Add New Item
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Category</th>
+                            <th>Current Stock</th>
+                            <th>Unit</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-table-body">
+                        <!-- Inventory items will be injected here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- STOCK TAKE SECTION -->
+        <div id="stocktake" class="section animated">
+            <div class="card" style="margin-bottom: 2rem; height: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div>
+                        <h2>Physical Stock Audit</h2>
+                        <p style="color: var(--text-dim); margin-top: 5px;">Enter the actual count found on the shelf.
+                        </p>
+                    </div>
+                    <button class="btn btn-primary" onclick="processStockTake()">
+                        <i data-lucide="check-circle"></i> Save Audit
+                    </button>
+                </div>
+            </div>
+
+            <div class="stock-take-grid" id="stock-take-grid">
+                <!-- Stock take items will be injected here -->
+            </div>
+        </div>
+
+        <!-- PROCUREMENT SECTION -->
+        <div id="procurement" class="section animated">
+            <div class="inventory-controls">
+                <h2>Smart Procurement</h2>
+                <button class="btn btn-primary" onclick="generateDraftOrders()">
+                    <i data-lucide="refresh-cw"></i> Refresh Drafts
+                </button>
+            </div>
+
+            <div id="draft-orders-container"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                <!-- Draft orders will be injected here -->
+            </div>
+
+            <div class="inventory-controls" id="pending-orders-header">
+                <h2>Pending Deliveries</h2>
+            </div>
+            <div id="pending-orders-container"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem;">
+                <!-- Pending orders will be injected here -->
+            </div>
+        </div>
+
+        <!-- ANALYTICS SECTION -->
+        <div id="analytics" class="section animated">
+            <div class="stats-grid">
+                <div class="card" style="grid-column: span 2;">
+                    <h3>Price Overview</h3>
+                    <canvas id="priceHistoryChart" height="250"></canvas>
+                </div>
+                <div class="card">
+                    <h3>Top Suppliers</h3>
+                    <div id="top-suppliers-list" style="margin-top: 1rem;">
+                        <!-- Supplier list goes here -->
+                    </div>
+                </div>
+            </div>
+            <div class="card" style="margin-top: 1.5rem;">
+                <h3>Recent Purchase History</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Item</th>
+                            <th>Supplier</th>
+                            <th>Quantity</th>
+                            <th>Total Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody id="purchase-history-body">
+                        <!-- History rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SETTINGS SECTION -->
+        <div id="settings" class="section animated">
+            <div class="card" style="max-width: 800px; height: auto;">
+                <h3 style="margin-bottom: 1.5rem;">System Configuration</h3>
+                <div class="form-group">
+                    <label>Monthly Purchase Budget ($)</label>
+                    <input type="number" id="setting-budget" value="1000" onchange="updateSettings()">
+                </div>
+                <div class="form-group">
+                    <label>Low Stock Warning Level (%)</label>
+                    <input type="number" id="setting-threshold" value="20" onchange="updateSettings()">
+                </div>
+                <div class="form-group">
+                    <label>Admin Notification Email</label>
+                    <input type="email" id="setting-email" value="admin@harazcoffee.com" onchange="updateSettings()">
+                </div>
+                <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 1.5rem 0;">
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+                    <button class="btn btn-primary" onclick="pushToCloud()">
+                        <i data-lucide="upload-cloud"></i> Upload to Cloud
+                    </button>
+                    <button class="btn btn-outline" onclick="pullFromCloud()">
+                        <i data-lucide="download-cloud"></i> Download from Cloud
+                    </button>
+                    <button class="btn btn-outline" onclick="exportData()">
+                        <i data-lucide="save"></i> Export Local JSON
+                    </button>
+                    <button class="btn btn-outline" onclick="resetSystem()"
+                        style="color: var(--danger); border-color: var(--danger);">
+                        <i data-lucide="trash-2"></i> Reset System
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal for Adding Item -->
+    <div id="addItemModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Add New Item</h2>
+                <button onclick="closeModal('addItemModal')"
+                    style="background:none; border:none; color:white; cursor:pointer;"><i data-lucide="x"></i></button>
+            </div>
+            <form id="add-item-form">
+                <input type="hidden" id="edit-item-id">
+                <div class="grid" style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Item Name</label>
+                        <input type="text" id="new-item-name" required placeholder="e.g. Milk">
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="new-item-category">
+                            <option>Dairy</option>
+                            <option>Coffee Beans</option>
+                            <option>Syrups</option>
+                            <option>Packaging</option>
+                            <option>Cleaning</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid" style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Current Stock</label>
+                        <input type="number" id="new-item-stock" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Unit</label>
+                        <input type="text" id="new-item-unit" placeholder="Liters, kg, pcs" required>
+                    </div>
+                </div>
+                <div class="grid" style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Minimum Threshold</label>
+                        <input type="number" id="new-item-min" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Usage (Days to last)</label>
+                        <input type="number" id="new-item-usage" required>
+                    </div>
+                </div>
+                <div class="grid" style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label>Supplier Name</label>
+                        <input type="text" id="new-item-supplier" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Current Price ($)</label>
+                        <input type="number" id="new-item-price" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Supplier Link</label>
+                    <input type="url" id="new-item-link" placeholder="https://supplier.com">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Save Item</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification-toast"></div>
+
+    <script>
+        // Data State
+        let inventory = JSON.parse(localStorage.getItem('haraz_inventory')) || [
+            { id: 1, name: 'Whole Milk', category: 'Dairy', stock: 24, unit: 'Liters', min: 10, supplier: 'Local Dairy', link: '', usageDays: 3, price: 1.50 },
+            { id: 2, name: 'Espresso Beans', category: 'Coffee Beans', stock: 12, unit: 'kg', min: 8, supplier: 'Global Roasters', link: '', usageDays: 7, price: 35.00 },
+            { id: 3, name: 'Sugar', category: 'Packaging', stock: 50, unit: 'kg', min: 20, supplier: 'Wholesale Mart', link: '', usageDays: 14, price: 1.20 }
+        ];
+
+        let history = JSON.parse(localStorage.getItem('haraz_history')) || [
+            { id: 101, date: '2026-01-10', item: 'Whole Milk', qty: 12, price: 1.50, supplier: 'Local Dairy' },
+            { id: 102, date: '2026-01-12', item: 'Espresso Beans', qty: 5, price: 35.00, supplier: 'Global Roasters' }
+        ];
+
+        let settings = JSON.parse(localStorage.getItem('haraz_settings')) || {
+            budget: 1000,
+            spend: 193,
+            threshold: 20,
+            email: 'admin@harazcoffee.com'
+        };
+
+        let orders = JSON.parse(localStorage.getItem('haraz_orders')) || [];
+
+        // UI Charts Variables
+        let usageChart, priceChart;
+
+        // Initialization
+        window.onload = async () => {
+            lucide.createIcons();
+            updateDashboard();
+            // Auto-sync on load
+            await pullFromCloud(true); // true means silent pull without confirmation
+        };
+
+        // Utility: Save All Data
+        function saveData(skipCloud = false) {
+            localStorage.setItem('haraz_inventory', JSON.stringify(inventory));
+            localStorage.setItem('haraz_history', JSON.stringify(history));
+            localStorage.setItem('haraz_settings', JSON.stringify(settings));
+            localStorage.setItem('haraz_orders', JSON.stringify(orders));
+            updateDashboard();
+
+            // Auto-push to cloud with debounce
+            if (!skipCloud) {
+                debouncePush();
+            }
+        }
+
+        let pushTimeout;
+        function debouncePush() {
+            clearTimeout(pushTimeout);
+            pushTimeout = setTimeout(() => {
+                pushToCloud(true); // true means silent push
+            }, 5000); // 5 second debounce to avoid hitting GitHub limits on rapid edits
+        }
+
+        // Navigation
+        function showSection(sectionId, element) {
+            document.querySelectorAll('.section').forEach(s => {
+                s.style.display = 'none';
+                s.classList.remove('active');
+            });
+            const activeSection = document.getElementById(sectionId);
+            activeSection.style.display = 'block';
+            setTimeout(() => activeSection.classList.add('active'), 10);
+
+            document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(i => i.classList.remove('active'));
+            element.classList.add('active');
+
+            // Sync mobile/desktop nav selection
+            const navIndex = Array.from(element.parentNode.children).indexOf(element);
+            const otherNav = element.parentNode.classList.contains('mobile-nav') ?
+                document.querySelectorAll('.nav-links .nav-item')[navIndex] :
+                document.querySelectorAll('.mobile-nav .mobile-nav-item')[navIndex];
+            if (otherNav) otherNav.classList.add('active');
+
+            const titles = {
+                dashboard: "Dashboard",
+                inventory: "Inventory Management",
+                stocktake: "Stock Audit",
+                procurement: "Procurement",
+                analytics: "Trends & Reports",
+                settings: "Settings"
+            };
+            document.getElementById('view-title').innerText = titles[sectionId];
+
+            if (sectionId === 'inventory') renderInventory();
+            if (sectionId === 'stocktake') renderStockTake();
+            if (sectionId === 'procurement') generateDraftOrders();
+            if (sectionId === 'analytics') renderAnalytics();
+        }
+
+        // Navigation Helper for internal clicks
+        function navigateToSection(sectionId) {
+            const isMobile = window.innerWidth <= 768;
+            const selector = isMobile ? `.mobile-nav-item[onclick*="${sectionId}"]` : `.nav-links .nav-item[onclick*="${sectionId}"]`;
+            const navItem = document.querySelector(selector);
+            if (navItem) {
+                showSection(sectionId, navItem);
+            }
+        }
+
+        function handleNotificationClick() {
+            const lowStockCount = inventory.filter(i => i.stock <= i.min).length;
+            if (lowStockCount > 0) {
+                navigateToSection('procurement');
+            } else {
+                showToast("No active alerts.");
+            }
+        }
+
+        // Dashboard Functions
+        function updateDashboard() {
+            const lowStockCount = inventory.filter(i => i.stock <= i.min).length;
+            document.getElementById('stat-total-items').innerText = inventory.length;
+            document.getElementById('stat-low-stock').innerText = lowStockCount;
+            document.getElementById('stat-month-spend').innerText = `$ ${settings.spend.toLocaleString()}`;
+
+            // Pending Orders
+            document.getElementById('stat-pending-orders').innerText = orders.length;
+
+            // Budget Progress
+            const progress = (settings.spend / settings.budget) * 100;
+            const bar = document.getElementById('budget-progress');
+            bar.style.width = `${Math.min(progress, 100)}%`;
+            document.getElementById('budget-text').innerText = `$ ${settings.spend.toFixed(0)} / ${settings.budget.toFixed(0)}`;
+
+            if (progress > 90) bar.style.background = 'var(--danger)';
+            else if (progress > 75) bar.style.background = 'var(--warning)';
+            else bar.style.background = 'var(--secondary)';
+
+            // Alerts
+            renderDashboardAlerts();
+            initUsageChart();
+
+            if (lowStockCount > 0) {
+                document.getElementById('notification-dot').style.display = 'block';
+            } else {
+                document.getElementById('notification-dot').style.display = 'none';
+            }
+        }
+
+        function renderDashboardAlerts() {
+            const container = document.getElementById('dashboard-alerts');
+            container.innerHTML = '';
+
+            inventory.forEach(i => {
+                if (i.stock <= i.min) {
+                    container.innerHTML += `
+                        <div style="background: rgba(255, 77, 77, 0.05); padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 77, 77, 0.2); display: flex; align-items: center; gap: 10px;">
+                            <i data-lucide="alert-circle" style="color: var(--danger); width: 18px;"></i>
+                            <div style="flex:1">
+                                <p style="font-size: 0.9rem; font-weight: 600;">${i.name} Critical!</p>
+                                <p style="font-size: 0.75rem; color: var(--text-dim);">Balance: ${i.stock} ${i.unit}</p>
+                            </div>
+                            <button class="btn btn-primary" style="padding: 4px 10px; font-size: 0.7rem;" onclick="showSection('procurement', document.querySelector('.nav-item:nth-child(4)'))">Order</button>
+                        </div>
+                    `;
+                } else {
+                    const consumptionPerDay = i.min / i.usageDays;
+                    const daysRemaining = Math.floor(i.stock / (consumptionPerDay || 1));
+                    if (daysRemaining <= 3) {
+                        container.innerHTML += `
+                            <div style="background: rgba(255, 171, 0, 0.05); padding: 12px; border-radius: 12px; border: 1px solid rgba(255, 171, 0, 0.2); display: flex; align-items: center; gap: 10px;">
+                                <i data-lucide="clock" style="color: var(--warning); width: 18px;"></i>
+                                <div style="flex:1">
+                                    <p style="font-size: 0.9rem; font-weight: 600;">Usage Alert: ${i.name}</p>
+                                    <p style="font-size: 0.75rem; color: var(--text-dim);">Est. ${daysRemaining} days left.</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            });
+            lucide.createIcons();
+        }
+
+        // Inventory Functions
+        function renderInventory(filterText = '') {
+            const tbody = document.getElementById('inventory-table-body');
+            tbody.innerHTML = '';
+
+            inventory.filter(i => i.name.toLowerCase().includes(filterText.toLowerCase())).forEach(item => {
+                const isLow = item.stock <= item.min;
+                tbody.innerHTML += `
+                    <tr class="item-row">
+                        <td style="font-weight: 600;">${item.name}</td>
+                        <td style="color: var(--text-dim);">${item.category}</td>
+                        <td>
+                            <div class="counter">
+                                <button class="counter-btn" onclick="adjustStock(${item.id}, -1)">-</button>
+                                <span style="font-weight: bold; width: 40px; text-align: center;">${item.stock}</span>
+                                <button class="counter-btn" onclick="adjustStock(${item.id}, 1)">+</button>
+                            </div>
+                        </td>
+                        <td>${item.unit}</td>
+                        <td>
+                            <span class="badge ${isLow ? 'badge-danger' : 'badge-success'}">${isLow ? 'Low' : 'OK'}</span>
+                        </td>
+                        <td>
+                            <button class="btn btn-outline" style="padding: 6px;" onclick="editItem(${item.id})">
+                                <i data-lucide="edit-2" style="width: 14px;"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function adjustStock(id, amount) {
+            const item = inventory.find(i => i.id === id);
+            if (item) {
+                item.stock = parseFloat((item.stock + amount).toFixed(2));
+                if (item.stock < 0) item.stock = 0;
+                saveData();
+                renderInventory();
+            }
+        }
+
+        function filterInventory(val) {
+            renderInventory(val);
+        }
+
+        // Stock Take Functions
+        function renderStockTake() {
+            const grid = document.getElementById('stock-take-grid');
+            grid.innerHTML = '';
+            inventory.forEach(item => {
+                grid.innerHTML += `
+                    <div class="stock-item-card">
+                        <div style="display: flex; justify-content: space-between;">
+                            <h3>${item.name}</h3>
+                            <span style="color: var(--text-dim); font-size: 0.8rem;">Expect: ${item.stock}</span>
+                        </div>
+                        <input type="number" step="0.01" class="daily-input" data-id="${item.id}" placeholder="Enter Actual Qty">
+                    </div>
+                `;
+            });
+        }
+
+        function processStockTake() {
+            const inputs = document.querySelectorAll('.daily-input');
+            let count = 0;
+            inputs.forEach(input => {
+                const val = parseFloat(input.value);
+                if (!isNaN(val)) {
+                    const id = parseInt(input.dataset.id);
+                    const item = inventory.find(i => i.id === id);
+                    if (item) {
+                        item.stock = val;
+                        count++;
+                    }
+                }
+            });
+            if (count > 0) {
+                saveData();
+                showToast(`Audit saved for ${count} items.`);
+                showSection('dashboard', document.querySelector('.nav-item:first-child'));
+            } else {
+                alert("Please enter at least one quantity.");
+            }
+        }
+
+        // Procurement Functions
+        function generateDraftOrders() {
+            const container = document.getElementById('draft-orders-container');
+            container.innerHTML = '';
+
+            const lowItems = inventory.filter(item => item.stock <= item.min);
+
+            if (lowItems.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-dim); padding: 3rem;">No orders required. All stock levels are sufficient.</p>';
+                return;
+            }
+
+            lowItems.forEach(item => {
+                const orderQty = Math.ceil(item.min * 2 - item.stock);
+                const totalCost = orderQty * item.price;
+
+                container.innerHTML += `
+                    <div class="card animated">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                            <h3>${item.name}</h3>
+                            <span class="badge badge-danger">Restock</span>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span>Order Quantity:</span>
+                                <b>${orderQty} ${item.unit}</b>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Estimated Cost:</span>
+                                <b style="color: var(--secondary);">$ ${totalCost.toFixed(2)}</b>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-primary" style="flex: 1;" onclick="completePurchase(${item.id}, ${orderQty}, ${totalCost})">Have Placed Order</button>
+                            ${item.link ? `<a href="${item.link}" target="_blank" class="btn btn-outline"><i data-lucide="external-link"></i></a>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function completePurchase(id, qty, cost) {
+            const item = inventory.find(i => i.id === id);
+            if (confirm(`Place order for ${qty} ${item.unit} of ${item.name} for $${cost.toFixed(2)}?`)) {
+                // Add to orders instead of immediate stock update
+                orders.unshift({
+                    id: Date.now(),
+                    date: new Date().toISOString().split('T')[0],
+                    itemId: item.id,
+                    itemName: item.name,
+                    qty: qty,
+                    price: item.price,
+                    cost: cost,
+                    unit: item.unit,
+                    supplier: item.supplier
+                });
+
+                settings.spend += cost;
+                saveData();
+                generateDraftOrders();
+                showToast("Order placed and tracking started.");
+            }
+        }
+
+        function receiveOrder(orderId) {
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            if (orderIndex === -1) return;
+
+            const order = orders[orderIndex];
+            const item = inventory.find(i => i.id === order.itemId);
+
+            if (confirm(`Mark shipment for ${order.itemName} (${order.qty} ${order.unit}) as received? Stock will be updated.`)) {
+                if (item) {
+                    item.stock += order.qty;
+                }
+
+                // Add to history
+                history.unshift({
+                    id: order.id,
+                    date: order.date,
+                    receivedDate: new Date().toISOString().split('T')[0],
+                    item: order.itemName,
+                    qty: order.qty,
+                    price: order.price,
+                    supplier: order.supplier
+                });
+
+                // Remove from active orders
+                orders.splice(orderIndex, 1);
+
+                saveData();
+                generateDraftOrders();
+                showToast("Delivery received and stock updated!");
+            }
+        }
+
+        function renderPendingOrders() {
+            const container = document.getElementById('pending-orders-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (orders.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-dim); padding: 2rem;">No shipments currently in transit.</p>';
+                return;
+            }
+
+            orders.forEach(order => {
+                container.innerHTML += `
+                    <div class="card animated" style="border-left: 4px solid var(--warning); height: auto;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                            <h3 style="font-size: 1.1rem;">In Transit: ${order.itemName}</h3>
+                            <span class="badge badge-warning">Pending</span>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.85rem;">
+                                <span>Ordered On:</span>
+                                <b>${order.date}</b>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.85rem;">
+                                <span>Quantity:</span>
+                                <b>${order.qty} ${order.unit}</b>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                                <span>Supplier:</span>
+                                <b>${order.supplier}</b>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%; background: linear-gradient(135deg, var(--success), #00c853);" onclick="receiveOrder(${order.id})">
+                            <i data-lucide="package-check" style="width: 18px;"></i> Mark as Received
+                        </button>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        // Wrap original generateDraftOrders to also call renderPendingOrders
+        const originalGenerateDraftOrders = generateDraftOrders;
+        generateDraftOrders = function () {
+            originalGenerateDraftOrders();
+            renderPendingOrders();
+        };
+
+        // Analytics Functions
+        function renderAnalytics() {
+            const tbody = document.getElementById('purchase-history-body');
+            tbody.innerHTML = '';
+
+            history.slice(0, 10).forEach(h => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${h.date}</td>
+                        <td style="font-weight: 600;">${h.item}</td>
+                        <td style="color: var(--text-dim);">${h.supplier}</td>
+                        <td>${h.qty}</td>
+                        <td>$ ${(h.qty * h.price).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            // Supplier List
+            const suppliers = {};
+            history.forEach(h => {
+                suppliers[h.supplier] = (suppliers[h.supplier] || 0) + (h.qty * h.price);
+            });
+
+            const list = document.getElementById('top-suppliers-list');
+            list.innerHTML = '';
+            Object.entries(suppliers).sort((a, b) => b[1] - a[1]).slice(0, 5).forEach(([name, spent]) => {
+                list.innerHTML += `
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--glass-border);">
+                        <span>${name}</span>
+                        <span style="font-weight: 600;">$ ${spent.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+
+            initPriceChart();
+        }
+
+        // Charts Logic
+        function initUsageChart() {
+            const ctx = document.getElementById('usageChart');
+            if (usageChart) usageChart.destroy();
+            usageChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Total Stock Volume',
+                        data: [40, 38, 35, 45, 42, 40, 37],
+                        borderColor: '#d4af37',
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(212, 175, 55, 0.1)'
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function initPriceChart() {
+            const ctx = document.getElementById('priceHistoryChart');
+            if (priceChart) priceChart.destroy();
+            priceChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: inventory.map(i => i.name).slice(0, 5),
+                    datasets: [{
+                        label: 'Current Unit Price ($)',
+                        data: inventory.map(i => i.price).slice(0, 5),
+                        backgroundColor: '#a67c52'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' } }
+                    }
+                }
+            });
+        }
+
+        // Settings Functions
+        function updateSettings() {
+            settings.budget = parseFloat(document.getElementById('setting-budget').value) || 0;
+            settings.threshold = parseFloat(document.getElementById('setting-threshold').value) || 20;
+            settings.email = document.getElementById('setting-email').value;
+            saveData();
+            showToast("Settings updated.");
+        }
+
+        function resetSystem() {
+            if (confirm("Are you sure? This will delete all your local data!")) {
+                localStorage.clear();
+                window.location.reload();
+            }
+        }
+
+        // Modal Logic
+        function openModal(id, itemId = null) {
+            document.getElementById(id).style.display = 'flex';
+            if (itemId) {
+                const item = inventory.find(i => i.id === itemId);
+                document.getElementById('modal-title').innerText = "Edit Item";
+                document.getElementById('edit-item-id').value = item.id;
+                document.getElementById('new-item-name').value = item.name;
+                document.getElementById('new-item-category').value = item.category;
+                document.getElementById('new-item-stock').value = item.stock;
+                document.getElementById('new-item-unit').value = item.unit;
+                document.getElementById('new-item-min').value = item.min;
+                document.getElementById('new-item-usage').value = item.usageDays;
+                document.getElementById('new-item-supplier').value = item.supplier;
+                document.getElementById('new-item-price').value = item.price;
+                document.getElementById('new-item-link').value = item.link;
+            } else {
+                document.getElementById('modal-title').innerText = "Add New Item";
+                document.getElementById('add-item-form').reset();
+                document.getElementById('edit-item-id').value = '';
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function editItem(id) {
+            openModal('addItemModal', id);
+        }
+
+        document.getElementById('add-item-form').onsubmit = function (e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-item-id').value;
+
+            const itemData = {
+                name: document.getElementById('new-item-name').value,
+                category: document.getElementById('new-item-category').value,
+                stock: parseFloat(document.getElementById('new-item-stock').value),
+                unit: document.getElementById('new-item-unit').value,
+                min: parseFloat(document.getElementById('new-item-min').value),
+                usageDays: parseInt(document.getElementById('new-item-usage').value),
+                supplier: document.getElementById('new-item-supplier').value,
+                price: parseFloat(document.getElementById('new-item-price').value),
+                link: document.getElementById('new-item-link').value
+            };
+
+            if (editId) {
+                const index = inventory.findIndex(i => i.id == editId);
+                inventory[index] = { ...inventory[index], ...itemData };
+                showToast("Item updated.");
+            } else {
+                inventory.push({ id: Date.now(), ...itemData });
+                showToast("Item added.");
+            }
+
+            saveData();
+            closeModal('addItemModal');
+            renderInventory();
+        };
+
+        // UI Helpers
+        function showToast(msg) {
+            const toast = document.getElementById('notification-toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+
+        // GitHub Cloud Functions
+        const GITHUB_CONFIG = {
+            token: "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",
+            owner: "syedahsanzafar",
+            repo: "syedahsanzafar",
+            path: "haraz_Cafe.json"
+        };
+
+        async function pushToCloud(silent = false) {
+            if (!silent) showToast("Syncing with Cloud...");
+            const data = { inventory, history, settings, orders };
+            const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+            const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
+
+            try {
+                // Get current file to get SHA
+                const getResponse = await fetch(url, {
+                    headers: { 'Authorization': `token ${GITHUB_CONFIG.token}` }
+                });
+
+                let sha = null;
+                if (getResponse.ok) {
+                    const fileData = await getResponse.json();
+                    sha = fileData.sha;
+                }
+
+                const putResponse = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_CONFIG.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: `Auto-Update ${new Date().toLocaleString()}`,
+                        content: content,
+                        sha: sha
+                    })
+                });
+
+                if (putResponse.ok) {
+                    if (!silent) showToast("Database uploaded successfully!");
+                    else console.log("Cloud Push: Success");
+                } else {
+                    const error = await putResponse.json();
+                    console.error("GitHub Upload Error:", error);
+                    if (!silent) showToast("Upload failed: " + (error.message || "Unknown error"));
+                }
+            } catch (err) {
+                console.error("Cloud Error:", err);
+                if (!silent) showToast("Connection error. Check console.");
+            }
+        }
+
+        async function pullFromCloud(silent = false) {
+            if (!silent) {
+                if (!confirm("This will overwrite your current local data with the cloud version. Continue?")) return;
+            }
+
+            if (!silent) showToast("Fetching from Cloud...");
+            const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `token ${GITHUB_CONFIG.token}` }
+                });
+
+                if (response.ok) {
+                    const fileData = await response.json();
+                    const content = decodeURIComponent(escape(atob(fileData.content)));
+                    const data = JSON.parse(content);
+
+                    inventory = data.inventory || [];
+                    history = data.history || [];
+                    settings = data.settings || settings;
+                    orders = data.orders || [];
+
+                    saveData(true); // true to skip auto-pushing back what we just pulled
+
+                    if (!silent) {
+                        showToast("Database downloaded and updated!");
+                        setTimeout(() => window.location.reload(), 1500);
+                    } else {
+                        console.log("Cloud Pull: Success");
+                        // If silent, just update UI without reload
+                        updateDashboard();
+                        if (document.getElementById('inventory').classList.contains('active')) renderInventory();
+                    }
+                } else {
+                    if (!silent) showToast("Failed to find database on cloud.");
+                }
+            } catch (err) {
+                console.error("Cloud Error:", err);
+                if (!silent) showToast("Connection error. Check console.");
+            }
+        }
+
+        function exportToExcel() {
+            const worksheet = XLSX.utils.json_to_sheet(inventory);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory");
+
+            // Format for download
+            XLSX.writeFile(workbook, `Haraz_Inventory_${new Date().toISOString().split('T')[0]}.xlsx`);
+            showToast("Inventory exported to Excel!");
+        }
+
+        function exportData() {
+            const data = JSON.stringify({ inventory, history, settings }, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `haraz_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+    </script>
+</body>
+
+</html>
