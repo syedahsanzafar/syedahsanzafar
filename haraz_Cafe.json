@@ -4,7 +4,7 @@
       "id": 1,
       "name": "Whole Milk",
       "category": "Dairy",
-      "stock": 28,
+      "stock": 60,
       "unit": "Liters",
       "min": 30,
       "supplier": "Local Dairy",
@@ -39,6 +39,15 @@
   ],
   "history": [
     {
+      "id": 1768585305883,
+      "date": "2026-01-16",
+      "receivedDate": "2026-01-16",
+      "item": "Whole Milk",
+      "qty": 32,
+      "price": 1.5,
+      "supplier": "Local Dairy"
+    },
+    {
       "id": 1768583761770,
       "date": "2026-01-16",
       "item": "Whole Milk",
@@ -69,17 +78,5 @@
     "threshold": 20,
     "email": "admin@harazcoffee.com"
   },
-  "orders": [
-    {
-      "id": 1768585305883,
-      "date": "2026-01-16",
-      "itemId": 1,
-      "itemName": "Whole Milk",
-      "qty": 32,
-      "price": 1.5,
-      "cost": 48,
-      "unit": "Liters",
-      "supplier": "Local Dairy"
-    }
-  ]
+  "orders": []
 }
