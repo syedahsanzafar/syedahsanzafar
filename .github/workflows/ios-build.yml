@@ -1,0 +1,48 @@
+name: Build iOS App
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm install
+          npm install @capacitor/cli @capacitor/core @capacitor/ios
+
+      - name: Prepare Web Assets
+        run: |
+          # Create the web folder defined in capacitor.config.json
+          mkdir -p www
+          # Copy the main HTML file to index.html in the web folder
+          cp Haraz_Cafe.html www/index.html
+
+      - name: Capacitor Sync
+        run: |
+          # Add iOS platform if it doesn't exist
+          if [ ! -d "ios" ]; then
+            npx cap add ios
+          fi
+          npx cap sync ios
+
+      - name: Build iOS App
+        run: |
+          # This builds the Xcode project. 
+          # Note: Without a development certificate/profile, this will build but won't be signable for App Store.
+          # It generates a .app folder in the build directory.
+          npx cap build ios --no-open
