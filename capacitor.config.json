@@ -1,6 +1,5 @@
 {
     "appId": "com.harazcafe.app",
     "appName": "Haraz Cafe",
-    "webDir": "www",
-    "bundledWebRuntime": false
+    "webDir": "www"
 }
