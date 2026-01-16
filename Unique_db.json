@@ -856,7 +856,8 @@
       ],
       "billTotal": 96068,
       "prevBal": 1426378.5,
-      "finalPayable": 1522446.5
+      "finalPayable": 1522446.5,
+      "notes": "Muzaffar took via ashraf sb"
     },
     {
       "inv": 1004,
@@ -1056,7 +1057,7 @@
   "logs": [],
   "invoiceCounter": 1003,
   "purchases": [],
-  "lastModified": 1768560198316,
+  "lastModified": 1768560243938,
   "royaltyPayments": [],
   "labours": [
     {
