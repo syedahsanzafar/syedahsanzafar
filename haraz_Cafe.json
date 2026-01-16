@@ -28,7 +28,7 @@
       "id": 3,
       "name": "Sugar",
       "category": "Packaging",
-      "stock": 50,
+      "stock": 15,
       "unit": "kg",
       "min": 20,
       "supplier": "Wholesale Mart",
