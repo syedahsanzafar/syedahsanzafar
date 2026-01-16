@@ -30,33 +30,32 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install Dependencies
-        run: npm install
+        run: |
+          npm install
+          npm install @capacitor/android @capacitor/core @capacitor/cli
 
-      - name: Prepare Web Assets
+      - name: Prep Web Assets
         run: |
           mkdir -p www
           cp Haraz_Cafe.html www/index.html
 
       - name: Capacitor Sync
         run: |
-          npx cap add android || echo "Android folder already exists"
+          # 1. Accept SDK Licenses
+          yes | sdkmanager --licenses || true
+          # 2. Clean and Add
+          rm -rf android
+          npx cap add android
           npx cap sync android
 
-      - name: Build Android APK
+      - name: Build APK
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
-        env:
-          JAVA_HOME: ${{ steps.setup-java.outputs.path }}
+          ./gradlew assembleDebug --stacktrace
 
-      - name: List Files for Debug
-        if: always()
-        run: |
-          find android/app/build/outputs/apk -name "*.apk" || echo "No APK found"
-
-      - name: Upload APK
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
+          name: android-apk
           path: android/app/build/outputs/apk/debug/*.apk
