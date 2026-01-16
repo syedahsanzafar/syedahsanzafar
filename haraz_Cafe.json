@@ -1,0 +1,64 @@
+{
+  "inventory": [
+    {
+      "id": 1,
+      "name": "Whole Milk",
+      "category": "Dairy",
+      "stock": 24,
+      "unit": "Liters",
+      "min": 10,
+      "supplier": "Local Dairy",
+      "link": "",
+      "usageDays": 3,
+      "price": 1.5
+    },
+    {
+      "id": 2,
+      "name": "Espresso Beans",
+      "category": "Coffee Beans",
+      "stock": 12,
+      "unit": "kg",
+      "min": 8,
+      "supplier": "Global Roasters",
+      "link": "",
+      "usageDays": 7,
+      "price": 35
+    },
+    {
+      "id": 3,
+      "name": "Sugar",
+      "category": "Packaging",
+      "stock": 50,
+      "unit": "kg",
+      "min": 20,
+      "supplier": "Wholesale Mart",
+      "link": "",
+      "usageDays": 14,
+      "price": 1.2
+    }
+  ],
+  "history": [
+    {
+      "id": 101,
+      "date": "2026-01-10",
+      "item": "Whole Milk",
+      "qty": 12,
+      "price": 1.5,
+      "supplier": "Local Dairy"
+    },
+    {
+      "id": 102,
+      "date": "2026-01-12",
+      "item": "Espresso Beans",
+      "qty": 5,
+      "price": 35,
+      "supplier": "Global Roasters"
+    }
+  ],
+  "settings": {
+    "budget": 1000,
+    "spend": 193,
+    "threshold": 20,
+    "email": "admin@harazcoffee.com"
+  }
+}
