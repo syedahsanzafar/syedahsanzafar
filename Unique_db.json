@@ -1055,7 +1055,7 @@
   "logs": [],
   "invoiceCounter": 1003,
   "purchases": [],
-  "lastModified": 1768560131165,
+  "lastModified": 1768560170055,
   "royaltyPayments": [],
   "labours": [
     {
@@ -1097,6 +1097,11 @@
       "id": 1768378582462,
       "name": "Majeed",
       "phone": "923054467329"
+    },
+    {
+      "id": 1768560170041,
+      "name": "A Quotation",
+      "phone": "923000333678"
     }
   ]
 }
