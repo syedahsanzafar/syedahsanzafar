@@ -39,9 +39,12 @@ jobs:
           fi
           npx cap sync ios
 
+      - name: Install CocoaPods
+        run: |
+          cd ios/App
+          pod install
+
       - name: Build iOS Project
         run: |
-          # Sync assets first
-          npx cap sync ios
-          # Build the Xcode project in folder 'ios/App'
-          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug -sdk iphonesimulator build
+          # Build the Xcode workspace in folder 'ios/App'
+          xcodebuild -workspace ios/App/App.xcworkspace -scheme App -configuration Debug -sdk iphonesimulator build CODE_SIGNING_ALLOWED=NO
