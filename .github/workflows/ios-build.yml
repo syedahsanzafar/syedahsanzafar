@@ -39,9 +39,9 @@ jobs:
           fi
           npx cap sync ios
 
-      - name: Build iOS App
+      - name: Build iOS Project
         run: |
-          # This builds the Xcode project. 
-          # Note: Without a development certificate/profile, this will build but won't be signable for App Store.
-          # It generates a .app folder in the build directory.
-          npx cap build ios --no-open
+          # Sync assets first
+          npx cap sync ios
+          # Build the Xcode project in folder 'ios/App'
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug -sdk iphonesimulator build
