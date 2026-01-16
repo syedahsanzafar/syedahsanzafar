@@ -39,12 +39,13 @@ jobs:
 
       - name: Capacitor Sync
         run: |
-          npx cap add android || true
+          npx cap add android || echo "Android folder already exists"
           npx cap sync android
 
       - name: Build Android APK
         run: |
           cd android
+          chmod +x gradlew
           ./gradlew assembleDebug
         env:
           JAVA_HOME: ${{ steps.setup-java.outputs.path }}
