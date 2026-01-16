@@ -74,9 +74,21 @@
   ],
   "settings": {
     "budget": 1000,
-    "spend": 295,
+    "spend": 680,
     "threshold": 20,
     "email": "admin@harazcoffee.com"
   },
-  "orders": []
+  "orders": [
+    {
+      "id": 1768585497562,
+      "date": "2026-01-16",
+      "itemId": 2,
+      "itemName": "Espresso Beans",
+      "qty": 11,
+      "price": 35,
+      "cost": 385,
+      "unit": "kg",
+      "supplier": "Global Roasters"
+    }
+  ]
 }
