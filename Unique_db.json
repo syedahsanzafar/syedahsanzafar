@@ -236,7 +236,7 @@
     {
       "id": 208,
       "name": "Awan Book Depot Tatapani",
-      "balance": 12337.5,
+      "balance": -0.5,
       "discounts": {
         "101": 15,
         "102": 15,
@@ -736,6 +736,12 @@
   ],
   "payments": [
     {
+      "date": "1/18/2026, 9:37:30 PM",
+      "customer": "Awan Book Depot Tatapani",
+      "amount": 12338,
+      "ref": "Via 5 star, FB"
+    },
+    {
       "date": "12/25/2025, 6:18:03 PM",
       "customer": "Khawaja Book Depot Athmuqam",
       "amount": 36225,
@@ -1057,7 +1063,7 @@
   "logs": [],
   "invoiceCounter": 1003,
   "purchases": [],
-  "lastModified": 1768560243938,
+  "lastModified": 1768754250595,
   "royaltyPayments": [],
   "labours": [
     {
