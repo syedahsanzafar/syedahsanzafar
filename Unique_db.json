@@ -818,7 +818,8 @@
       ],
       "billTotal": 36225,
       "prevBal": 0,
-      "finalPayable": 36225
+      "finalPayable": 36225,
+      "notes": "Self took from Ashraf sb"
     },
     {
       "inv": 1008,
@@ -1134,7 +1135,7 @@
   "logs": [],
   "invoiceCounter": 1003,
   "purchases": [],
-  "lastModified": 1768814995196,
+  "lastModified": 1768844106717,
   "royaltyPayments": [],
   "labours": [
     {
