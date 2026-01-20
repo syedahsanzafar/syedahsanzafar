@@ -285,6 +285,13 @@
       "phone": "923004062921"
     },
     {
+      "id": 1768900126836,
+      "name": "Basharat Book Depot Patikka",
+      "phone": "923005144520",
+      "balance": 0,
+      "discounts": {}
+    },
+    {
       "id": 211,
       "name": "Book Point Bagh",
       "balance": 0,
@@ -1135,7 +1142,7 @@
   "logs": [],
   "invoiceCounter": 1003,
   "purchases": [],
-  "lastModified": 1768844106717,
+  "lastModified": 1768900127014,
   "royaltyPayments": [],
   "labours": [
     {
