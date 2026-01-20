@@ -1189,7 +1189,7 @@
   "logs": [],
   "invoiceCounter": 1003,
   "purchases": [],
-  "lastModified": 1768914607266,
+  "lastModified": 1768914621853,
   "royaltyPayments": [],
   "labours": [
     {
@@ -1236,6 +1236,11 @@
       "id": 1768560170041,
       "name": "A Quotation",
       "phone": "923000333678"
+    },
+    {
+      "id": 1768914621626,
+      "name": "Ibrahim",
+      "phone": "923334702330"
     }
   ]
 }
